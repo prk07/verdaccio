@@ -16,8 +16,8 @@ describe('<LoginModal />', () => {
         title: 'Error Title',
         description: 'Error Description'
       },
-      onCancel: () => {},
-      onSubmit: () => {}
+      onCancel: () => { },
+      onSubmit: () => { }
     };
     const wrapper = mount(<LoginModal {...props} />);
     expect(wrapper.html()).toMatchSnapshot();
@@ -32,12 +32,12 @@ describe('<LoginModal />', () => {
         description: 'Error Description'
       },
       onCancel: jest.fn(),
-      onSubmit: () => {}
+      onSubmit: () => { }
     };
     const wrapper = mount(<LoginModal {...props} />);
-    wrapper.find('.el-dialog__footer > .cancel-login-button').simulate('click');
+    wrapper.find('.dialog-footer > .cancel-login-button').simulate('click');
     expect(props.onCancel).toHaveBeenCalled();
-    wrapper.find('.el-dialog__headerbtn > .el-dialog__close').simulate('click');
+    wrapper.find('.dialog-footer > .login-button').simulate('click');
     expect(props.onCancel).toHaveBeenCalled();
   });
 
@@ -51,10 +51,21 @@ describe('<LoginModal />', () => {
     const wrapper = mount(<LoginModal {...props} />);
     const { setCredentials } = wrapper.instance();
 
-    expect(setCredentials('username', 'xyz')).toBeUndefined();
+    const eventUsername = {
+      target: {
+        value: 'xyz'
+      }
+    }
+
+    const eventPassword = {
+      target: {
+        value: '1234'
+      }
+    }
+    expect(setCredentials('username', eventUsername)).toBeUndefined();
     expect(wrapper.state('username')).toEqual('xyz');
 
-    expect(setCredentials('password', '1234')).toBeUndefined();
+    expect(setCredentials('password', eventPassword)).toBeUndefined();
     expect(wrapper.state('password')).toEqual('1234');
   });
 
@@ -71,7 +82,7 @@ describe('<LoginModal />', () => {
     }
     const wrapper = mount(<LoginModal {...props} />);
     const { submitCredentials } = wrapper.instance();
-    wrapper.setState({username: 'sam', password: 1234})
+    wrapper.setState({ username: 'sam', password: 1234 })
     await submitCredentials(event);
     expect(props.onSubmit).toHaveBeenCalledWith('sam', 1234);
     expect(event.preventDefault).toHaveBeenCalled();
